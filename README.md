@@ -20,6 +20,6 @@ Three builds are created:
 Simply run one of the generated builds. Program output is saved to stdout and `log.txt`
 
 ##Future work
+- [x] ~~Constantly delete and rename the build to make killing by name **fun**~~ Completed using advanced deception
 - [ ] Turn into a library so turning other applications into rapidly forking hellspawn is easy
 - [ ] Replace `signal` and `SIGALRM` with timers for even more frequent forking
-- [ ] Constantly delete and rename the build to make killing by name **fun**

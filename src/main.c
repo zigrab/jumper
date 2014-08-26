@@ -19,6 +19,7 @@
 typedef void (*sighandler_t)(int);
 
 static int log_fd;
+static char *argv0;
 
 
 /* Logger printf replacement */
@@ -56,6 +57,17 @@ void init_handlers(sighandler_t alrm)
     alarm(HOP_INTERVAL);
 }
 
+void rename_argv0()
+{
+    int i, len = strlen(argv0);
+
+    /* Randomly lowercase and uppercase - this only effects what ps displays */
+    for (i = 0; i < len; i++) {
+        argv0[i] = rand() % 26 + 'A';
+        argv0[i] += rand() & 2 ? 'a' - 'A' : 0;
+    }
+}
+
 /* Signal handler for SIGALRM it receives every few seconds */
 void alrm_h(int signum)
 {
@@ -75,17 +87,19 @@ void alrm_h(int signum)
         } else if (res) {
             exit(0);
         } else {
-#ifndef SILENT
-            s_printnf("^-- Jumped!\n");
-#endif
             init_handlers(alrm_h);
+
+            rename_argv0();
+#ifndef SILENT
+            s_printnf("^-- Jumped! I am now %s\n", argv0);
+#endif
         }
     } else {
         s_printnf("!!! Got some other signal %d\n", signum);
     }
 }
 
-/* Inane garbage function - if the number is odd then add 1, then/else half it until we reach 1 */
+/* Inane garbage function - if the number is odd then add 1 and double, then/else half it until we reach 1 */
 unsigned int some_stuff(unsigned int i)
 {
     if (i & 1)
@@ -96,10 +110,12 @@ unsigned int some_stuff(unsigned int i)
     return i;
 }
 
-int main()
+int main(int argc, char **argv)
 {
     struct timeval t;
     unsigned int i = 1;
+
+    argv0 = argv[0];
 
     /* Seed rng to assist some_stuff */
     gettimeofday(&t, NULL);
