@@ -1,5 +1,4 @@
 #Jumper
-* * *
 
 Jumper is a proof of concept application which shows how it is possible to jump from process to process without interrupting program flow.
 
